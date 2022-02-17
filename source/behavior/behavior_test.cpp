@@ -5,10 +5,10 @@
 // It is much better to use separate tests to verify separate behaviors
 SCENARIO("a user wants to buy an article", "[process_transaction_good]")
 {
+  User user{LOW_BALANCE_THRESHOLD + dollars(2)};
 
   GIVEN("a transaction that will take place")
   {
-    User user{LOW_BALANCE_THRESHOLD + dollars(2)};
     Transaction transaction{"Pile of Beanie Babies", dollars(3)};
 
     WHEN("the user starts the transaction")
@@ -18,17 +18,20 @@ SCENARIO("a user wants to buy an article", "[process_transaction_good]")
 
       THEN("The UI displays a notification")
       {
-        REQUIRE(UI::getInstance().getText() == "You bought a Pile of Beanie Babies");
+        CHECK(UI::getInstance().getText() == "You bought a Pile of Beanie Babies" );
       }
 
       AND_WHEN("the user's new balance is below the threshold")
       {
-        CHECK(user.getBalance() < LOW_BALANCE_THRESHOLD);
+        REQUIRE(user.getBalance() < LOW_BALANCE_THRESHOLD);
+
+        const auto email = user.getEmails();
+        REQUIRE_FALSE(email.empty());
 
         THEN("an email is sent to the user informing him about the low balance")
         {
-          REQUIRE(user.getEmails().size() == 1);
-          REQUIRE(*user.getEmails().begin() == "Your balance is low");
+          CHECK(email.size() == 1);
+          CHECK(email[0] == "Your balance is low");
         }
       }
     }
