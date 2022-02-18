@@ -16,7 +16,7 @@ SCENARIO("navigate to photos page without logic", "[navigate_to_photos_good]")
 
       THEN("the user gets navigated to the correct page")
       {
-        REQUIRE(nav.getCurrentUrl() == "http://plus.google.com//u/0/photos"); // fails
+        CHECK(nav.getCurrentUrl() == "http://plus.google.com/u/0/photos"); // fails
       }
     }
   }
